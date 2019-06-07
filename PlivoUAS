@@ -1,0 +1,24 @@
+import paramiko
+
+
+class CallerB:
+    def __init__(self, ip, username, password):
+        self.ip = ip
+        self.username = username
+        self.password = password
+
+    def connect(self):
+        usera = paramiko.SSHClient()
+        usera.load_system_host_keys()
+        usera.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        usera.connect(hostname=self.ip, username = self.username, password = self.password)
+        print('Log in')
+        connect = usera.invoke_shell()
+        connect.exec_command('cd C:\cygwin64\Sipp_3.2 ./sipp -t u1 -sf uasplivo.xml  -r 1  -trace_err Caller.log')
+
+
+a = CallerB('172.31.98.175', 'admin', 'default')
+a.connect()
+
+
+
