@@ -1,0 +1,118 @@
+
+
+   1:<?xml version="1.0" encoding="ISO-8859-1" ?>
+   2:<!DOCTYPE scenario SYSTEM "sipp.dtd">
+   3:
+   4:<!-- This program is free software; you can redistribute it and/or      -->
+   5:<!-- modify it under the terms of the GNU General Public License as     -->
+   6:<!-- published by the Free Software Foundation; either version 2 of the -->
+   7:<!-- License, or (at your option) any later version.                    -->
+   8:<!--                                                                    -->
+   9:<!-- This program is distributed in the hope that it will be useful,    -->
+  10:<!-- but WITHOUT ANY WARRANTY; without even the implied warranty of     -->
+  11:<!-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the      -->
+  12:<!-- GNU General Public License for more details.                       -->
+  13:<!--                                                                    -->
+  14:<!-- You should have received a copy of the GNU General Public License  -->
+  15:<!-- along with this program; if not, write to the                      -->
+  16:<!-- Free Software Foundation, Inc.,                                    -->
+  17:<!-- 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA             -->
+  18:<!--                                                                    -->
+  19:<!--                 Sipp default 'uas' scenario.                       -->
+  20:<!--                                                                    -->
+  21:
+  22:<scenario name="Basic UAS responder">
+  23:  <!-- By adding rrs="true" (Record Route Sets), the route sets         -->
+  24:  <!-- are saved and used for following messages sent. Useful to test   -->
+  25:  <!-- against stateful SIP proxies/B2BUAs.                             -->
+  26:  <recv request="INVITE" crlf="true">
+  27:  </recv>
+  28:
+  29:  <!-- The '[last_*]' keyword is replaced automatically by the          -->
+  30:  <!-- specified header if it was present in the last message received  -->
+  31:  <!-- (except if it was a retransmission). If the header was not       -->
+  32:  <!-- present or if no message has been received, the '[last_*]'       -->
+  33:  <!-- keyword is discarded, and all bytes until the end of the line    -->
+  34:  <!-- are also discarded.                                              -->
+  35:  <!--                                                                  -->
+  36:  <!-- If the specified header was present several times in the         -->
+  37:  <!-- message, all occurences are concatenated (CRLF seperated)        -->
+  38:  <!-- to be used in place of the '[last_*]' keyword.                   -->
+  39:
+  40:  <send>
+  41:    <![CDATA[
+  42:
+  43:      SIP/2.0 180 Ringing
+  44:      [last_Via:]
+  45:      [last_From:]
+  46:      [last_To:];tag=[call_number]
+  47:      [last_Call-ID:]
+  48:      [last_CSeq:]
+  49:      Contact: <sip:[local_ip]:[local_port];transport=[transport]>
+  50:      Content-Length: 0
+  51:
+  52:    ]]>
+  53:  </send>
+  54:
+  55:  <send retrans="500">
+  56:    <![CDATA[
+  57:
+  58:      SIP/2.0 200 OK
+  59:      [last_Via:]
+  60:      [last_From:]
+  61:      [last_To:];tag=[call_number]
+  62:      [last_Call-ID:]
+  63:      [last_CSeq:]
+  64:      Contact: <sip:[local_ip]:[local_port];transport=[transport]>
+  65:      Content-Type: application/sdp
+  66:      Content-Length: [len]
+  67:
+  68:      v=0
+  69:      o=user1 53655765 2353687637 IN IP[local_ip_type] [local_ip]
+  70:      s=-
+  71:      c=IN IP[media_ip_type] [media_ip]
+  72:      t=0 0
+  73:      m=audio [media_port] RTP/AVP 0
+  74:      a=rtpmap:0 PCMU/8000
+  75:
+  76:    ]]>
+  77:  </send>
+  78:
+  79:  <recv request="ACK"
+  80:        optional="true"
+  81:        rtd="true"
+  82:        crlf="true">
+  83:  </recv>
+  84:
+  85:  <recv request="BYE">
+  86:  </recv>
+  87:
+  88:  <send>
+  89:    <![CDATA[
+  90:
+  91:      SIP/2.0 200 OK
+  92:      [last_Via:]
+  93:      [last_From:]
+  94:      [last_To:]
+  95:      [last_Call-ID:]
+  96:      [last_CSeq:]
+  97:      Contact: <sip:[local_ip]:[local_port];transport=[transport]>
+  98:      Content-Length: 0
+  99:
+ 100:    ]]>
+ 101:  </send>
+ 102:
+ 103:  <!-- Keep the call open for a while in case the 200 is lost to be     -->
+ 104:  <!-- able to retransmit it if we receive the BYE again.               -->
+ 105:  <pause milliseconds="4000"/>
+ 106:
+ 107:
+ 108:  <!-- definition of the response time repartition table (unit is ms)   -->
+ 109:  <ResponseTimeRepartition value="10, 20, 30, 40, 50, 100, 150, 200"/>
+ 110:
+ 111:  <!-- definition of the call length repartition table (unit is ms)     -->
+ 112:  <CallLengthRepartition value="10, 50, 100, 500, 1000, 5000, 10000"/>
+ 113:
+ 114:</scenario>
+ 115:
+
