@@ -1,0 +1,24 @@
+import paramiko
+from time import sleep
+
+
+class remote_CallerA:
+    def __init__(self,ip,username,password):
+        self.ip=ip
+        self.username=username
+        self.password=password
+        #self.n=n
+        #print(n)
+    def remote_connect(self):
+        client = paramiko.SSHClient()
+        client.load_system_host_keys()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.connect(self.ip, port=22, username=self.username, password=self.password)
+        print ('Logging in to SIPP caller Machine')
+        remote_connect=client.invoke_shell()
+        return remote_connect, client
+        
+        a=remote_CallerA('10.1.1.22','controller','admin')
+        
+        a.execute_commands('cd /home/yoursystem/sipp-3.3','pwd','su','password','./sipp -t t1  -sn uac -sf uacplivo.xml -inf basiccall.csv  -m 1 -l 1 -trace_msg Registration.log phone.plivo.com')
+
