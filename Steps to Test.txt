@@ -1,0 +1,13 @@
+Manual Steps:
+1. Created 2 users using Plivo account
+2. Regitered 2 X-Lite phones
+3. made calls between them, it worked fine.
+
+Automation Steps:
+# Concept is to use Sipp to trigger call between UAC and UAS
+1. Run the PlivoUAC file, which will invoke a shell and will run the
+command to trigger and Invite and corrosponding messages.
+2. Similarly, do it for PlivoUAS, server side
+
+
+
