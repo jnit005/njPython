@@ -11,7 +11,7 @@ class CallerA:
         usera = paramiko.SSHClient()
         usera.load_system_host_keys()
         usera.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        usera.connect(hostname=self.ipusername=self.username, password=self.password)
+        usera.connect(hostname=self.ip,username=self.username, password=self.password)
         print ('Log in')
         connect = usera.invoke_shell()
         connect.exec_command('cd C:\cygwin64\Sipp_3.2 ./sipp -t t1  -sn uac -sf uacplivo.xml')
